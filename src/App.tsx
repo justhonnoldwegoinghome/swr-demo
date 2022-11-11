@@ -1,20 +1,10 @@
-import * as React from "react";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  useNavigate,
-  Link,
-  Outlet,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link, Outlet } from "react-router-dom";
 import { Button } from "semantic-ui-react";
 
 import { AnyJokeCard } from "./AnyJokeCard";
 import { ProgrammingJokeCard } from "./ProgrammingJokeCard";
-import { ChangeJokeButton } from "./ChangeJokeButton";
 
 function App() {
-  const [random, setRandom] = React.useState(Math.random());
   return (
     <div
       className="App"
@@ -48,25 +38,9 @@ function App() {
               </>
             }
           >
-            <Route
-              path="/"
-              element={
-                <>
-                  <AnyJokeCard random={random} />
-                  <ChangeJokeButton change={() => setRandom(Math.random())} />
-                </>
-              }
-            />
+            <Route path="/" element={<AnyJokeCard />} />
 
-            <Route
-              path="/programming"
-              element={
-                <>
-                  <ProgrammingJokeCard random={random} />
-                  <ChangeJokeButton change={() => setRandom(Math.random())} />
-                </>
-              }
-            />
+            <Route path="/programming" element={<ProgrammingJokeCard />} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -1,46 +1,49 @@
-# Getting Started with Create React App
+## Summary
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+SWR (stale-while-revalidate) is a data-fetching pattern/strategy. Vercel's SWR [vSWR] is an implementation of it.
 
-## Available Scripts
+When a request needs to be made, vSWR checks whether there is a cache for that specified url. This cache is maintained by the vSWR, not the browser. If cache exists, it is used first. In the meantime, a new request to made to the url. If the new response differs from the cache, `data` is updated and the new response is cached.
 
-In the project directory, you can run:
+<br/>
 
-### `npm start`
+### Fetching
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```
+function Profile() {
+  const { data, error } = useSWR(key, key => fetch(key))
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+  if (error) return <div>failed to load</div>
+  if (!data) return <div>loading...</div>
+  return <div>hello {data.name}!</div>
+}
+```
 
-### `npm test`
+<br/>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Triggering re-fetch
 
-### `npm run build`
+```
+function Profile() {
+  const { data, error, mutate } = useSWR(key, key => fetch(key))
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+  if (error) return <div>failed to load</div>
+  if (!data) return <div>loading...</div>
+  return <div onClick={()=>mutate()}>hello {data.name}!</div>
+}
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+<br/>
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Inspecting cache (only for the curious)
 
-### `npm run eject`
+```
+function Profile() {
+  const { cache } = useSWRConfig()
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+  console.log(cache)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+  ...
+}
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+<br/>

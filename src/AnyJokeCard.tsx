@@ -1,31 +1,33 @@
-import * as React from "react";
+import useSwr, { useSWRConfig } from "swr";
 import { Card } from "semantic-ui-react";
+import { ChangeJokeButton } from "./ChangeJokeButton";
 
-export function AnyJokeCard({ random }: { random: number }) {
-  const [joke, setJoke] = React.useState<{
-    category: string;
-    joke: string;
-  } | null>(null);
+export function AnyJokeCard() {
+  const { cache } = useSWRConfig();
+  const { data, error, mutate } = useSwr(
+    "https://v2.jokeapi.dev/joke/Any?type=single",
+    (url) => fetch(url).then((res) => res.json())
+  );
 
-  React.useEffect(() => {
-    fetch("https://v2.jokeapi.dev/joke/Any?type=single")
-      .then((res) => res.json())
-      .then((data) => setJoke(data));
-  }, [random]);
+  console.log("[AnyJokeCard] Cache is: ", cache);
 
-  if (joke === null) return <div style={{ height: "300px" }}>Loading</div>;
+  if (!data) return <div style={{ height: "300px" }}>Loading</div>;
 
   return (
-    <Card style={{ minHeight: "300px", width: "300px" }} color="red">
-      <Card.Content>
-        <Card.Header>Joke</Card.Header>
-        <Card.Meta>
-          <span className="date">Category: {joke.category}</span>
-        </Card.Meta>
-        <Card.Description style={{ wordBreak: "break-word" }}>
-          {joke.joke}
-        </Card.Description>
-      </Card.Content>
-    </Card>
+    <>
+      <Card style={{ minHeight: "300px", width: "300px" }} color="red">
+        <Card.Content>
+          <Card.Header>Joke</Card.Header>
+          <Card.Meta>
+            <span className="date">Category: {data.category}</span>
+          </Card.Meta>
+          <Card.Description style={{ wordBreak: "break-word" }}>
+            {data.joke}
+          </Card.Description>
+        </Card.Content>
+      </Card>
+
+      <ChangeJokeButton change={() => mutate()} />
+    </>
   );
 }
