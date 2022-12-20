@@ -3,6 +3,8 @@ import { Button } from "semantic-ui-react";
 
 import { AnyJokeCard } from "./AnyJokeCard";
 import { ProgrammingJokeCard } from "./ProgrammingJokeCard";
+import { Unbrokered } from "./Unbrokered";
+import { UnbrokeredTwo } from "./UnbrokeredTwo";
 
 function App() {
   return (
@@ -42,6 +44,8 @@ function App() {
 
             <Route path="/programming" element={<ProgrammingJokeCard />} />
           </Route>
+          <Route path="/unbrokered" element={<Unbrokered />} />
+          <Route path="/unbrokered2" element={<UnbrokeredTwo />} />
         </Routes>
       </BrowserRouter>
     </div>
